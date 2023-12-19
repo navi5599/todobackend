@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 // GET SINGLE TODO
 router.get('/:id', validateTodoId, async (req, res) => {
   try {
-    const todo: ITodo | undefined = req.todo;
+    const todo: ITodo | undefined = req.todo
     res.status(200).json(todo)
   } catch (err) {
     res.status(500).json({ error: err })
@@ -50,35 +50,35 @@ router.post('/', validateBody, async (req, res) => {
 // UPDATE TODO
 router.patch('/:id', validateTodoId, async (req, res) => {
   try {
-    const todoId = req.params.id;
-    const updatedTodoData: ITodo = req.body;
+    const todoId = req.params.id
+    const updatedTodoData: ITodo = req.body
 
     const updatedTodo: ITodo | null = await Todos.findByIdAndUpdate(
       todoId,
       updatedTodoData,
       { new: true } 
-    );
+    )
 
     if (!updatedTodo) {
-      res.status(404).json({ error: 'Todo not found' });
+      res.status(404).json({ error: 'Todo not found' })
     } else {
-      res.status(200).json(updatedTodo);
-    }
-  } catch (err) {
-    res.status(500).json({ error: err });
-  }
-});
-
-// DELETE TODO
-router.delete('/:id', validateTodoId, async (req, res) => {
-  try {
-    const todo: ITodo | undefined = req.todo
-    const deletedTodo: ITodo | null = await Todos.delete(todo)
-    if (deletedTodo) {
-      res.status(200).json({ message: 'Todo deleted successfully' })
+      res.status(200).json(updatedTodo)
     }
   } catch (err) {
     res.status(500).json({ error: err })
+  }
+})
+
+// DELETE TODO
+router.delete('/:id', validateTodoId, async (req, res) => {
+  const todoId = req.params.id
+
+  try {
+    await Todos.findByIdAndDelete(todoId)
+    res.status(200).json({ message: 'Todo deleted successfully.' })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'An error occurred.' })
   }
 })
 

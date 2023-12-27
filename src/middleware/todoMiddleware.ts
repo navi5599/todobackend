@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import { isValidObjectId } from 'mongoose'
-import { ITodo } from '../models'
+import { ITodo } from '../models/Todo'
 
-const Models = require('../models.ts')
+const Models = require('../models/Todo')
 const Todos = Models.Todos
 
 declare global {

@@ -1,85 +1,22 @@
 import express, { Router } from 'express'
-import { ITodo } from '../models'
-import { validateBody, validateTodoId } from '../middleware/middleware'
-
-const Models = require('../models.ts')
-const Todos = Models.Todos
+import { validateBody, validateTodoId } from '../middleware/todoMiddleware'
+import { createTodo, deleteTodo, getTodo, getTodos, updateTodo } from '../controllers/todoController'
 
 const router = Router()
 
 // GET TODOS
-router.get('/', async (req, res) => {
- try {
-  const todos: ITodo[] = await Todos.find()
-  res.status(200).json(todos)
- } catch(err) {
-  res.status(500).json({ error: err })
- }
-})
+router.get('/', getTodos)
 
 // GET SINGLE TODO
-router.get('/:id', validateTodoId, async (req, res) => {
-  try {
-    const todo: ITodo | undefined = req.todo
-    res.status(200).json(todo)
-  } catch (err) {
-    res.status(500).json({ error: err })
-  }
-})
+router.get('/:id', validateTodoId, getTodo)
 
 // CREATE TODO
-router.post('/', validateBody, async (req, res) => {
-  try {
-    const { title, description, startingAt, endingAt, isCompleted, isScheduled } = req.body
-    
-    const newTodo: ITodo = await Todos.create({
-      title,
-      description,
-      startingAt,
-      endingAt,
-      isCompleted,
-      isScheduled,
-    })
-
-    res.status(201).json(newTodo)
-  } catch (err) {
-    res.status(500).json({ error: err })
-  }
-})
+router.post('/', validateBody, createTodo)
 
 // UPDATE TODO
-router.patch('/:id', validateTodoId, async (req, res) => {
-  try {
-    const todoId = req.params.id
-    const updatedTodoData: ITodo = req.body
-
-    const updatedTodo: ITodo | null = await Todos.findByIdAndUpdate(
-      todoId,
-      updatedTodoData,
-      { new: true } 
-    )
-
-    if (!updatedTodo) {
-      res.status(404).json({ error: 'Todo not found' })
-    } else {
-      res.status(200).json(updatedTodo)
-    }
-  } catch (err) {
-    res.status(500).json({ error: err })
-  }
-})
+router.patch('/:id', validateTodoId, updateTodo)
 
 // DELETE TODO
-router.delete('/:id', validateTodoId, async (req, res) => {
-  const todoId = req.params.id
-
-  try {
-    await Todos.findByIdAndDelete(todoId)
-    res.status(200).json({ message: 'Todo deleted successfully.' })
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: 'An error occurred.' })
-  }
-})
+router.delete('/:id', validateTodoId, deleteTodo)
 
 export default router

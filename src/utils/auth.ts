@@ -6,11 +6,11 @@ const generateToken = (res: Response, userId: string) => {
   const token = jwt.sign({ userId }, jwtSecret, {
     expiresIn: "1h",
   })
-
+  
   res.cookie("jwt", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV !== "development",
-    sameSite: "strict",
+    sameSite: 'none',
+    secure: true,
     maxAge: 60 * 60 * 1000,
   })
 }

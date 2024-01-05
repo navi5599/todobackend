@@ -20,7 +20,6 @@ const registerUser = async (req: Request, res: Response) => {
   })
 
   if (user) {
-    generateToken(res, user._id)
     res.status(201).json({
       id: user._id,
       name: user.name,
@@ -31,7 +30,7 @@ const registerUser = async (req: Request, res: Response) => {
   }
 }
 
-const authenticateUser = async (req: Request, res: Response) => {
+const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body
   const user = await User.findOne({ email })
   const comparedPassword = await user?.comparePassword(password)
@@ -53,4 +52,9 @@ const logoutUser = (req: Request, res: Response) => {
   res.status(200).json({ message: "User logged out" })
 }
 
-export { registerUser, authenticateUser, logoutUser }
+const getUser = (req: Request, res: Response) => {
+  const user = req.user;
+  res.status(200).json({ message: 'User is authorized', user })
+}
+
+export { registerUser, loginUser, logoutUser, getUser }

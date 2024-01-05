@@ -43,6 +43,7 @@ mongoose.connection.on('error', err => {
  console.log(err)
 })
 
+app.use(cookieParser())
 app.use(helmet())
 app.use(cors({
   origin: "http://localhost:3000",
@@ -50,7 +51,6 @@ app.use(cors({
 }))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cookieParser())
 
 app.use(express.static('public'))
 app.use(morgan('common'))
